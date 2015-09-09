@@ -1,10 +1,10 @@
 <?php
-App::uses('AppModel', 'Model');
+App::uses('Model', 'Model');
 
 /**
  * Class CakePHPExchangeRatesAppModel
  */
-class CakePHPExchangeRatesAppModel extends AppModel {
+class CakePHPExchangeRatesAppModel extends Model {
 
 /**
  * @var int
