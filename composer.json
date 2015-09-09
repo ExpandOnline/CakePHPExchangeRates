@@ -1,0 +1,10 @@
+{
+  "name": "ExpandOnline/CakePHPExchangeRates",
+  "type": "cakephp-plugin",
+  "version": "0.1.0",
+  "description": "A CakePHP plugin for importing exchange rates and converting financial data.",
+  "homepage": "http://github.com/ExpandOnline/CakePHPExchangeRates",
+  "require": {
+    "php": ">=5.4.16"
+  }
+}

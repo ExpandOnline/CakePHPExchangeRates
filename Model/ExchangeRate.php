@@ -1,0 +1,94 @@
+<?php
+App::uses('CakePHPExchangeRatesAppModel', 'CakePHPExchangeRates.Model');
+
+/**
+ * Class ExchangeRate
+ *
+ * @property ExchangeRateLog $ExchangeRateLog
+ */
+class ExchangeRate extends CakePHPExchangeRatesAppModel {
+
+/**
+ * If the different is greater than 5%, log this.
+ * @var int
+ */
+	protected $_maxDiffPercentage = 5;
+
+/**
+ * The table is prefixed with 'cper'.
+ * @var string
+ */
+	public $useTable = 'cper_exchange_rates';
+
+/**
+ * @var array
+ */
+	public $hasMany = array(
+		'ExchangeRateLog' => array(
+			'className' => 'CakePHPExchangeRates.ExchangeRateLog',
+			'foreign_key' => 'exchange_rate_id'
+		)
+	);
+
+/**
+ * Called after each successful save operation.
+ *
+ * @param bool $created True if this save created a new record
+ * @param array $options Options passed from Model::save().
+ * @return void
+ * @link http://book.cakephp.org/2.0/en/models/callback-methods.html#aftersave
+ * @see Model::save()
+ */
+	public function afterSave($created, $options = array()) {
+		$this->_compareWithPreviousExchangeRate($this->data);
+	}
+
+/**
+ * @param string $currency
+ * @param string $date
+ *
+ * @return string
+ */
+	public function getExistingId($currency, $date) {
+		return $this->field('id', array(
+			'currency' => $currency,
+			'date' => $date
+		));
+	}
+
+/**
+ * Compare the new exchange rate with the previous exchange rate.
+ *
+ * @param array $data
+ */
+	protected function _compareWithPreviousExchangeRate(array $data) {
+		$previousExchangeRate = $this->_getPreviousExchangeRate($data);
+		if (!$previousExchangeRate) {
+			return;
+		}
+		$diff = $previousExchangeRate['ExchangeRate']['rate'] - $data['ExchangeRate']['rate'];
+		$percentageDiff = abs(($diff / $previousExchangeRate['ExchangeRate']['rate']) * 100);
+		if ($percentageDiff > $this->_maxDiffPercentage) {
+			$this->ExchangeRateLog->addLog(sprintf('Currency \'%s\' has changed more than the alert threshold of %d%%. '
+				. 'Difference percentage: %d%%; Old rate: %f; New rate: %f;',
+				$previousExchangeRate['ExchangeRate']['currency'],$this->_maxDiffPercentage, $percentageDiff,
+				$previousExchangeRate['ExchangeRate']['rate'], $data['ExchangeRate']['rate']),
+				$data['ExchangeRate']['id']);
+		}
+	}
+
+/**
+ * Get the previous exchange rate.
+ *
+ * @param array $data
+ */
+	protected function _getPreviousExchangeRate(array $data) {
+		return $this->find('first', array(
+			'conditions' => array(
+				'date <' => $data['ExchangeRate']['date'],
+				'currency' => $data['ExchangeRate']['currency'],
+			),
+			'order' => 'date DESC'
+		));
+	}
+}
