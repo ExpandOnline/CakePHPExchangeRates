@@ -6,7 +6,12 @@ App::uses('Model', 'Model');
  */
 class CakePHPExchangeRatesAppModel extends Model {
 
-/**
+	/**
+	 * @var array
+	 */
+	public $actsAs = array('Containable');
+
+	/**
  * @var int
  */
 	public $recursive = -1;

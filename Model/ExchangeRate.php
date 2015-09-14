@@ -5,6 +5,7 @@ App::uses('CakePHPExchangeRatesAppModel', 'CakePHPExchangeRates.Model');
  * Class ExchangeRate
  *
  * @property ExchangeRateLog $ExchangeRateLog
+ * @property Currency $Currency
  */
 class ExchangeRate extends CakePHPExchangeRatesAppModel {
 
@@ -27,6 +28,16 @@ class ExchangeRate extends CakePHPExchangeRatesAppModel {
 		'ExchangeRateLog' => array(
 			'className' => 'CakePHPExchangeRates.ExchangeRateLog',
 			'foreign_key' => 'exchange_rate_id'
+		)
+	);
+
+/**
+ * @var array
+ */
+	public $belongsTo = array(
+		'Currency' => array(
+			'className' => 'CakePHPExchangeRates.Currency',
+			'foreignKey' => 'currency'
 		)
 	);
 
