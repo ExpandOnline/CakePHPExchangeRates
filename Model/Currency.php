@@ -20,12 +20,23 @@ class Currency extends CakePHPExchangeRatesAppModel {
 /**
  * @var array
  */
-	public $hasMany = array(
+	public $hasOne = array(
+		'CurrentExchangeRate' => array(
+			'className' => 'CakePHPExchangeRates.ExchangeRate',
+			'foreignKey' => 'currency',
+			'order' => 'CurrentExchangeRate.date desc',
+			'limit' => 1
+		)
+	);
+
+/**
+ * @var array
+ */
+	public $hasMany= array(
 		'ExchangeRate' => array(
 			'className' => 'CakePHPExchangeRates.ExchangeRate',
 			'foreignKey' => 'currency',
 			'order' => 'ExchangeRate.date desc',
-			'limit' => 1
 		)
 	);
 }
