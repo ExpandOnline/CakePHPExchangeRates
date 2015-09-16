@@ -73,7 +73,7 @@ class ExchangeRate extends CakePHPExchangeRatesAppModel {
  * @param array $data
  */
 	protected function _compareWithPreviousExchangeRate(array $data) {
-		$previousExchangeRate = $this->_getPreviousExchangeRate($data);
+		$previousExchangeRate = $this->_getPreviousExchangeRate($data['ExchangeRate']['currency'], $data['ExchangeRate']['date']);
 		if (!$previousExchangeRate) {
 			return;
 		}
@@ -93,13 +93,32 @@ class ExchangeRate extends CakePHPExchangeRatesAppModel {
  *
  * @param array $data
  */
-	protected function _getPreviousExchangeRate(array $data) {
+	protected function _getPreviousExchangeRate($currency, $dateString) {
 		return $this->find('first', array(
 			'conditions' => array(
-				'date <' => $data['ExchangeRate']['date'],
-				'currency' => $data['ExchangeRate']['currency'],
+				'ExchangeRate.date <' => $dateString,
+				'ExchangeRate.currency' => $currency,
+			),
+			'contain' => array(
+				'Currency.surcharge'
 			),
 			'order' => 'date DESC'
 		));
+	}
+
+/**
+ * @param          $currency
+ * @param DateTime $date
+ *
+ * @return array|null
+ */
+	public function getRate($currency, DateTime $date) {
+		$rate = $this->_getPreviousExchangeRate($currency, $date->format('Y-m-d H:i:s'));
+		if (empty($rate)) {
+			throw new NotFoundException(
+				sprintf('No exchange rate was found for %s before %s', $currency, $date->format('Y-m-d'))
+			);
+		}
+		return $rate;
 	}
 }
