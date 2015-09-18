@@ -10,6 +10,7 @@ class ExchangeRateTest extends CakeTestCase {
 	public $fixtures = array(
 		'plugin.CakePHPExchangeRates.exchange_rate',
 		'plugin.CakePHPExchangeRates.exchange_rate_log',
+		'plugin.CakePHPExchangeRates.currency',
 	);
 
 /**
@@ -32,10 +33,16 @@ class ExchangeRateTest extends CakeTestCase {
  * Test the afterSave method.
  */
 	public function testSave() {
+		$previousExchangeRate = $this->ExchangeRate->find('first', array(
+			'conditions' => array(
+				'currency' => 'USD'
+			),
+			'order' => 'id DESC'
+		));
 		$data = array(
 			'currency' => 'USD',
 			'date' => date('Y-m-d', strtotime('yesterday')),
-			'rate' => '1'
+			'rate' => $previousExchangeRate['ExchangeRate']['rate']
 		);
 		$savedData = $this->ExchangeRate->save($data);
 		$this->assertEquals(0, $this->ExchangeRate->ExchangeRateLog->find('count', array(
@@ -47,7 +54,7 @@ class ExchangeRateTest extends CakeTestCase {
 		$data = array(
 			'currency' => 'USD',
 			'date' => date('Y-m-d'),
-			'rate' => '2'
+			'rate' => $previousExchangeRate['ExchangeRate']['rate'] + 1
 		);
 		$this->ExchangeRate->create();
 		$savedData = $this->ExchangeRate->save($data);
