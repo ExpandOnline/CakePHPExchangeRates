@@ -13,6 +13,16 @@ class ExchangeRateLog extends CakePHPExchangeRatesAppModel {
 	public $useTable = 'cper_exchange_rate_logs';
 
 /**
+ * @var array
+ */
+	public $belongsTo = array(
+		'ExchangeRate' => array(
+			'className' => 'CakePHPExchangeRates.ExchangeRate',
+			'foreignKey' => 'exchange_rate_id'
+		)
+	);
+
+/**
  * @param      $message
  * @param null $exchangeRateId
  */
