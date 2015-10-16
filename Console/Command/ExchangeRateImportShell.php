@@ -26,6 +26,9 @@ class ExchangeRateImportShell extends Shell {
 	public function import() {
 		$exchangeRateImporter = new EcbExchangeRateImporter();
 		$exchangeRateImporter->import();
+
+		$event = new CakeEvent('ExchangeRateImport.completed', $this);
+		CakeEventManager::instance()->dispatch($event);
 	}
 
 }
