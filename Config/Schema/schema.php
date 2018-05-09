@@ -81,7 +81,7 @@ class CakePHPExchangeRatesSchema extends CakeSchema {
 	public $cper_exchange_rates = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => true, 'key' => 'primary'),
 		'currency' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 10, 'key' => 'index', 'collate' => 'latin1_swedish_ci', 'charset' => 'latin1'),
-		'rate' => array('type' => 'decimal', 'null' => false, 'default' => null, 'length' => '10,2', 'unsigned' => false),
+		'rate' => array('type' => 'decimal', 'null' => false, 'default' => null, 'length' => '13,5', 'unsigned' => false),
 		'date' => array('type' => 'date', 'null' => false, 'default' => null),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null),
